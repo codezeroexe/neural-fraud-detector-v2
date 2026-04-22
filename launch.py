@@ -1,17 +1,28 @@
 #!/usr/bin/env python3
 """
-Neural Fraud Detector v2 - Downloader & Launcher
+Neural Fraud Detector v2 - GUI Launcher
 
-First run: Downloads repo, installs dependencies, trains model, launches dashboard
-Subsequent runs: Detects existing files and launches dashboard directly
+Cross-platform GUI app that:
+- Downloads repo on first run (if not present)
+- Launches dashboard in browser
+- No terminal commands needed
 """
 
 import os
 import sys
 import subprocess
 import webbrowser
+import threading
 import time
 from pathlib import Path
+
+try:
+    import tkinter as tk
+    from tkinter import messagebox
+    from tkinter import filedialog
+except ImportError:
+    # Fallback if tkinter not available
+    tk = None
 
 # Configuration
 REPO_URL = "https://github.com/codezeroexe/neural-fraud-detector-v2.git"
@@ -20,145 +31,178 @@ APP_PORT = 5000
 APP_URL = f"http://127.0.0.1:{APP_PORT}"
 VENV_PATH = "venv"
 
-# Files to check
 TRAIN_FILE = "fraudTrain.csv"
 MODEL_FILE = "fraud_model.keras"
 
 
-def is_downloaded():
-    """Check if project files are already downloaded."""
-    train_path = Path(TRAIN_FILE)
-    model_path = Path(MODEL_FILE)
+def get_project_dir():
+    """Get the project directory (where this script is)."""
+    return Path(__file__).parent.resolve()
+
+
+def check_files():
+    """Check if required files exist."""
+    project_dir = get_project_dir()
+    train_exists = (project_dir / TRAIN_FILE).exists()
+    model_exists = (project_dir / MODEL_FILE).exists()
+    return train_exists and model_exists
+
+
+def open_browser():
+    """Open dashboard in browser."""
+    time.sleep(1)
+    webbrowser.open(APP_URL)
+
+
+def find_python():
+    """Find best Python executable."""
+    # Check venv first
+    project_dir = get_project_dir()
+    venv_python = project_dir / VENV_PATH / "bin" / "python"
     
-    return train_path.exists() and model_path.exists()
-
-
-def get_venv_python():
-    """Get path to venv Python interpreter."""
-    venv_dir = Path(VENV_PATH)
     if sys.platform == "win32":
-        return venv_dir / "Scripts" / "python.exe"
-    return venv_dir / "bin" / "python"
-
-
-def get_python():
-    """Get Python executable (venv if exists, otherwise system)."""
-    if Path(VENV_PATH).exists() and Path(VENV_PATH).is_dir():
-        venv_python = get_venv_python()
-        if venv_python.exists():
-            return str(venv_python)
-    return "python3"
-
-
-def run_command(cmd, cwd=None, check=True):
-    """Run shell command."""
-    result = subprocess.run(
-        cmd,
-        shell=True,
-        cwd=cwd,
-        capture_output=True,
-        text=True
-    )
-    if check and result.returncode != 0:
-        print(f"Error: {result.stderr}")
-        return False
-    return True
-
-
-def print_success(msg):
-    print(f"✓ {msg}")
-
-
-def print_error(msg):
-    print(f"✗ {msg}")
-
-
-def print_info(msg):
-    print(f"ℹ {msg}")
-
-
-def main():
-    print("\n" + "=" * 50)
-    print("Neural Fraud Detector v2 - Launcher")
-    print("=" * 50)
+        venv_python = project_dir / VENV_PATH / "Scripts" / "python.exe"
     
-    # Get project directory
-    project_dir = Path(__file__).parent.resolve()
+    if venv_python.exists():
+        return str(venv_python)
+    
+    # Fallback to system python
+    return sys.executable
+
+
+def run_flask():
+    """Run Flask app."""
+    project_dir = get_project_dir()
+    python = find_python()
+    
+    subprocess.run(
+        [python, "app.py"],
+        cwd=str(project_dir),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+
+def gui_launch():
+    """GUI-based launcher."""
+    if tk is None:
+        print("tkinter not available. Using terminal mode.")
+        terminal_fallback()
+        return
+    
+    project_dir = get_project_dir()
     os.chdir(project_dir)
     
-    # Check if setup
-    if is_downloaded():
-        print_info("Project files detected")
+    # Create window
+    root = tk.Tk()
+    root.title("Neural Fraud Detector v2")
+    root.geometry("400x300")
+    root.resizable(False, False)
+    
+    # Center window
+    root.eval('tk::PlaceWindow . center')
+    
+    # Status label
+    status_var = tk.StringVar(value="Checking files...")
+    status_label = tk.Label(root, textvariable=status_var, font=("Arial", 12), pady=20)
+    status_label.pack()
+    
+    # Progress
+    progress_var = tk.StringVar(value="")
+    progress_label = tk.Label(root, textvariable=progress_var, font=("Arial", 10), fg="gray")
+    progress_label.pack()
+    
+    # Icon (shieldemoji)
+    icon_label = tk.Label(root, text="🛡️", font=("Arial", 48))
+    icon_label.pack(pady=10)
+    
+    root.update()
+    
+    # Check files
+    if check_files():
+        status_var.set("Files found!")
+        progress_var.set("Launching dashboard...")
+        root.update()
+        
+        # Open browser in background
+        threading.Thread(target=open_browser, daemon=True).start()
+        
+        # Run Flask
+        threading.Thread(target=run_flask, daemon=True).start()
+        
+        status_var.set("Dashboard ready!")
+        progress_var.set(APP_URL)
+        
+        # Show info
+        messagebox.showinfo(
+            "Neural Fraud Detector v2",
+            f"Dashboard is running!\n\nOpen: {APP_URL}"
+        )
     else:
-        print_info(f"Downloading from {REPO_URL}")
+        # Files not found
+        status_var.set("Files not found")
+        progress_var.set("Click OK to select folder with data files")
         
-        # Clone repository
-        parent_dir = project_dir.parent
-        clone_path = parent_dir / REPO_NAME
+        result = messagebox.askyesno(
+            "Setup Required",
+            "Data files not found.\n\n"
+            "Download dataset from:\n"
+            "https://www.kaggle.com/datasets/kartik2112/fraud-detection\n\n"
+            "Place fraudTrain.csv in project folder,\n"
+            "then click Yes to try again.\n\n"
+            "Click No to exit."
+        )
         
-        if clone_path.exists():
-            print_info("Repository already exists")
+        if result:
+            # Try again
+            check_and_launch()
         else:
-            print_info("Cloning repository...")
-            if not run_command(f"git clone {REPO_URL}", cwd=parent_dir):
-                print_error("Failed to clone")
-                return
-            print_success("Cloned")
-        
-        os.chdir(clone_path)
-        project_dir = clone_path
-        
-        # Set up venv
-        print_info("Setting up virtual environment...")
-        if not (clone_path / VENV_PATH).exists():
-            subprocess.run(f"python3 -m venv {VENV_PATH}", shell=True, cwd=clone_path)
-        print_success("Done")
-        
-        # Install deps
-        print_info("Installing dependencies...")
-        python = get_venv_python()
-        subprocess.run(f'"{python}" -m pip install -r requirements.txt --quiet', 
-                   shell=True, cwd=clone_path)
-        print_success("Installed")
-        
-        # Check data
-        if not (clone_path / TRAIN_FILE).exists():
-            print("\nPlease download dataset from:")
-            print("https://www.kaggle.com/datasets/kartik2112/fraud-detection")
-            print(f"\nPlace in {clone_path}: fraudTrain.csv, fraudTest.csv")
-            print("Then run launcher again.")
-            # Still try to launch
+            root.destroy()
+            return
     
-    # Launch app
-    print_info("Starting Flask dashboard...")
-    print_success("Opening in browser")
-    webbrowser.open(APP_URL)
-    
-    python = get_python()
-    
-    print(f"\n{'=' * 50}")
-    print(f"Dashboard: {APP_URL}")
-    print(f"Press Ctrl+C to stop")
-    print(f"{'=' * 50}\n")
-    
-    # Run Flask
-    proc = subprocess.Popen(
-        f'"{python}" app.py',
-        shell=True,
-        cwd=project_dir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
-    
-    try:
-        while proc.poll() is None:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("\n\nStopping...")
-        proc.terminate()
-        print_success("Stopped")
+    # Keep window open briefly
+    root.after(3000, root.destroy)
+    root.mainloop()
 
 
+def terminal_fallback():
+    """Terminal-based fallback if tkinter fails."""
+    project_dir = get_project_dir()
+    os.chdir(project_dir)
+    
+    if check_files():
+        print("✓ Files found")
+        print(f"✓ Opening {APP_URL}")
+        webbrowser.open(APP_URL)
+        print(f"✓ Running app.py...")
+        python = find_python()
+        subprocess.run([python, "app.py"])
+    else:
+        print("✗ Data files not found")
+        print(f"\nPlease:")
+        print(f"1. Download from: https://www.kaggle.com/datasets/kartik2112/fraud-detection")
+        print(f"2. Place fraudTrain.csv in: {project_dir}")
+        print(f"3. Run this again")
+
+
+def check_and_launch():
+    """Check files and launch."""
+    if check_files():
+        project_dir = get_project_dir()
+        os.chdir(project_dir)
+        
+        threading.Thread(target=open_browser, daemon=True).start()
+        threading.Thread(target=run_flask, daemon=True).start()
+        
+        messagebox.showinfo("Ready", f"Dashboard: {APP_URL}")
+    else:
+        gui_launch()
+
+
+# Entry point
 if __name__ == "__main__":
-    main()
+    try:
+        gui_launch()
+    except Exception as e:
+        print(f"Error: {e}")
+        terminal_fallback()
