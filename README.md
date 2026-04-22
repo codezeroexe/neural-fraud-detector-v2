@@ -9,22 +9,22 @@
 
 ---
 
-## Quick Start (No Terminal Needed)
+## Quick Start
 
-### GUI Launcher (Recommended)
+### Double-Click to Run (Recommended)
 
-Download from [Releases](https://github.com/codezeroexe/neural-fraud-detector-v2/releases) and run:
+1. Download release from [Releases](https://github.com/codezeroexe/neural-fraud-detector-v2/releases)
+2. Extract the folder
+3. Double-click `Neural Fraud Detector.command` (macOS) or `Neural Fraud Detector.bat` (Windows)
+4. Done! Everything happens automatically.
 
-```bash
-python launch.py
-```
+The launcher will:
+- Create virtual environment
+- Install dependencies
+- Download dataset (if not present)
+- Launch dashboard in browser
 
-- Opens GUI window on desktop
-- Automatically detects files
-- Launches browser with dashboard
-- Cross-platform (Windows/macOS/Linux)
-
-### Terminal
+### Manual Start
 
 ```bash
 git clone https://github.com/codezeroexe/neural-fraud-detector-v2.git
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Then open http://127.0.0.1:5000
+Open http://127.0.0.1:5000
 
 ---
 
