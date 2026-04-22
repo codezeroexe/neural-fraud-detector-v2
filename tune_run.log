@@ -1,0 +1,63 @@
+============================================================
+HYPERPARAMETER TUNING - RANDOM SEARCH
+============================================================
+
+Loading data...
+Preprocessing...
+Train: 1,167,007, Val: 129,668
+
+Starting Random Search with 15 trials...
+
+Trial 1/15: {'hidden_layers': [256, 128, 64], 'dropout_rate': 0.5, 'learning_rate': 0.0001, 'batch_size': 2048, 'epochs': 30}
+  ROC-AUC: 0.9676, PR-AUC: 0.3029, Score: 0.6352
+  *** New best! ***
+Trial 2/15: {'hidden_layers': [128, 64, 32], 'dropout_rate': 0.3, 'learning_rate': 0.0005, 'batch_size': 4096, 'epochs': 20}
+  ROC-AUC: 0.9837, PR-AUC: 0.6520, Score: 0.8178
+  *** New best! ***
+Trial 3/15: {'hidden_layers': [512, 256, 128], 'dropout_rate': 0.5, 'learning_rate': 0.001, 'batch_size': 1024, 'epochs': 40}
+  ROC-AUC: 0.9871, PR-AUC: 0.6936, Score: 0.8403
+  *** New best! ***
+Trial 4/15: {'hidden_layers': [256, 128], 'dropout_rate': 0.4, 'learning_rate': 0.0005, 'batch_size': 1024, 'epochs': 20}
+  ROC-AUC: 0.9877, PR-AUC: 0.7231, Score: 0.8554
+  *** New best! ***
+Trial 5/15: {'hidden_layers': [512, 256, 128], 'dropout_rate': 0.2, 'learning_rate': 0.0001, 'batch_size': 4096, 'epochs': 40}
+  ROC-AUC: 0.9840, PR-AUC: 0.7228, Score: 0.8534
+Trial 6/15: {'hidden_layers': [128, 64, 32], 'dropout_rate': 0.4, 'learning_rate': 0.005, 'batch_size': 4096, 'epochs': 30}
+  ROC-AUC: 0.9925, PR-AUC: 0.7903, Score: 0.8914
+  *** New best! ***
+Trial 7/15: {'hidden_layers': [512, 256, 128], 'dropout_rate': 0.2, 'learning_rate': 0.005, 'batch_size': 4096, 'epochs': 20}
+  ROC-AUC: 0.9918, PR-AUC: 0.7878, Score: 0.8898
+Trial 8/15: {'hidden_layers': [128, 64, 32], 'dropout_rate': 0.3, 'learning_rate': 0.0001, 'batch_size': 4096, 'epochs': 40}
+  ROC-AUC: 0.9667, PR-AUC: 0.3091, Score: 0.6379
+Trial 9/15: {'hidden_layers': [512, 256, 128], 'dropout_rate': 0.2, 'learning_rate': 0.0005, 'batch_size': 2048, 'epochs': 40}
+  ROC-AUC: 0.9898, PR-AUC: 0.7707, Score: 0.8802
+Trial 10/15: {'hidden_layers': [256, 128, 64], 'dropout_rate': 0.2, 'learning_rate': 0.005, 'batch_size': 4096, 'epochs': 30}
+  ROC-AUC: 0.9935, PR-AUC: 0.8475, Score: 0.9205
+  *** New best! ***
+Trial 11/15: {'hidden_layers': [256, 128], 'dropout_rate': 0.5, 'learning_rate': 0.005, 'batch_size': 2048, 'epochs': 20}
+  ROC-AUC: 0.9918, PR-AUC: 0.7869, Score: 0.8894
+Trial 12/15: {'hidden_layers': [512, 256, 128], 'dropout_rate': 0.3, 'learning_rate': 0.0001, 'batch_size': 4096, 'epochs': 30}
+  ROC-AUC: 0.9812, PR-AUC: 0.6852, Score: 0.8332
+Trial 13/15: {'hidden_layers': [256, 128, 64], 'dropout_rate': 0.5, 'learning_rate': 0.005, 'batch_size': 4096, 'epochs': 40}
+  ROC-AUC: 0.9910, PR-AUC: 0.7720, Score: 0.8815
+Trial 14/15: {'hidden_layers': [256, 128], 'dropout_rate': 0.3, 'learning_rate': 0.0005, 'batch_size': 1024, 'epochs': 40}
+  ROC-AUC: 0.9880, PR-AUC: 0.7246, Score: 0.8563
+Trial 15/15: {'hidden_layers': [512, 256, 128], 'dropout_rate': 0.4, 'learning_rate': 0.0005, 'batch_size': 4096, 'epochs': 20}
+  ROC-AUC: 0.9893, PR-AUC: 0.7567, Score: 0.8730
+
+============================================================
+RANDOM SEARCH RESULTS
+============================================================
+
+Best Parameters:
+  hidden_layers: [256, 128, 64]
+  dropout_rate: 0.2
+  learning_rate: 0.005
+  batch_size: 4096
+  epochs: 30
+
+Best Score: 0.9205
+
+Saved results to hyperparam_results.csv
+
+Saved best params to best_hyperparams.pkl
