@@ -1,5 +1,6 @@
-# Neural Fraud Detector
+# Neural Fraud Detector v2
 
+> This is **v2** of the original [neural-fraud-detector](https://github.com/codezeroexe/neural-fraud-detector).  
 > A deep learning solution for credit card fraud detection — classifying transactions as fraudulent or legitimate with 95%+ ROC-AUC accuracy.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
