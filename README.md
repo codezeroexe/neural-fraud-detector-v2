@@ -9,6 +9,34 @@
 
 ---
 
+## Quick Start (No Terminal Needed)
+
+### GUI Launcher (Recommended)
+
+Download from [Releases](https://github.com/codezeroexe/neural-fraud-detector-v2/releases) and run:
+
+```bash
+python launch.py
+```
+
+- Opens GUI window on desktop
+- Automatically detects files
+- Launches browser with dashboard
+- Cross-platform (Windows/macOS/Linux)
+
+### Terminal
+
+```bash
+git clone https://github.com/codezeroexe/neural-fraud-detector-v2.git
+cd neural-fraud-detector-v2
+pip install -r requirements.txt
+python app.py
+```
+
+Then open http://127.0.0.1:5000
+
+---
+
 ## Overview
 
 MLP neural network detecting fraudulent transactions with **0.98 ROC-AUC**, handling extreme class imbalance (~0.5% fraud rate) using class weighting.
