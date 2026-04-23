@@ -784,21 +784,6 @@
         });
     }
 
-    // ─── Keyboard Navigation ─────────────────────────────
-    document.addEventListener('keydown', (e) => {
-        const tabs = Array.from(tabBtns);
-        const idx = tabs.findIndex(t => t.classList.contains('active'));
-        if (e.key === 'ArrowRight' && idx < tabs.length - 1) tabs[idx + 1].click();
-        if (e.key === 'ArrowLeft' && idx > 0) tabs[idx - 1].click();
-        if (e.key >= '1' && e.key <= '6') {
-            const n = parseInt(e.key) - 1;
-            if (tabs[n]) tabs[n].click();
-        }
-        if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
-            showToast('Keys: ←→ navigate, 1-6 switch tabs', 'info');
-        }
-    });
-
     // ═══════════════════════════════════════════════════
     // PREDICT TAB
     // ═══════════════════════════════════════════════════
