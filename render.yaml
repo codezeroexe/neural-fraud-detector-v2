@@ -1,6 +1,7 @@
 {
   "build": {
     "command": "pip install -r requirements.txt",
+    "pythonVersion": "3.12",
     "publish": "python app.py",
     "generator": "python"
   },
@@ -23,6 +24,7 @@
       "name": "web",
       "build": {
         "command": "pip install -r requirements.txt",
+        "pythonVersion": "3.12",
         "generator": "python"
       },
       "deploy": {
