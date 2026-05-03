@@ -19,6 +19,7 @@ import pandas as pd
 import joblib
 import tensorflow as tf
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 from datetime import datetime
 from sklearn.metrics import (
     confusion_matrix as sk_confusion_matrix,
@@ -30,6 +31,7 @@ from sklearn.metrics import (
 # App setup
 # ──────────────────────────────────────────────────────────
 app = Flask(__name__)
+CORS(app)
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
