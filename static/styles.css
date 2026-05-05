@@ -4,7 +4,7 @@
    No gradients. No neon. No glassmorphism.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
 
 /* ── Light Mode (Default) ────────────────────────────────── */
 :root {
@@ -65,7 +65,7 @@
     --shadow:    0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
     --transition: all 0.2s ease;
-    --mono:      'JetBrains Mono', monospace;
+    --mono:      'Geist Mono', monospace;
 
     /* Chart */
     --chart-grid: rgba(0, 0, 0, 0.06);
@@ -132,10 +132,10 @@
 
 /* ── Reset ───────────────────────────────────────────────── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; font-size: 115%; }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
@@ -144,12 +144,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ── App Layout: Sidebar + Main ─────────────────────────── */
-.app-layout {
-    display: flex;
-    min-height: 100vh;
-}
-
+/* ── Main Content ────────────────────────────── */
 .main-content {
     flex: 1;
     margin-left: 240px;
@@ -934,7 +929,7 @@ body {
 
 .chart-canvas {
     width: 100%;
-    height: 160px;
+    height: 184px; /* 160px * 1.15 */
 }
 
 /* ── Confusion Matrix ────────────────────────────────────── */

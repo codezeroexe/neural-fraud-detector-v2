@@ -12,9 +12,6 @@
 </head>
 <body>
 
-<!-- Skip Link -->
-<a href="#main-content" class="skip-link">Skip to main content</a>
-
 <!-- Mobile Hamburger Button -->
 <button id="hamburger" class="hamburger" aria-label="Toggle menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -24,11 +21,8 @@
     </svg>
 </button>
 
-<!-- App Layout: Sidebar + Main Content -->
-<div class="app-layout">
-
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+<!-- Sidebar (outside app-layout to avoid breaking position:fixed) -->
+<aside class="sidebar" id="sidebar">
         <div class="sidebar__brand">
             <span class="sidebar__icon">🛡️</span>
             <span class="sidebar__label">Fraud Detection</span>
@@ -46,7 +40,7 @@
                 <span class="sidebar__item-label">EDA Analysis</span>
             </button>
             <button class="sidebar__item" data-tab="architecture" role="tab">
-                <span class="sidebar__item-icon">🧮</span>
+                <span class="sidebar__item-icon">🧠</span>
                 <span class="sidebar__item-label">Architecture</span>
             </button>
             <button class="sidebar__item" data-tab="training" role="tab">
@@ -54,7 +48,7 @@
                 <span class="sidebar__item-label">Training</span>
             </button>
             <button class="sidebar__item" data-tab="tuning" role="tab">
-                <span class="sidebar__item-icon">🔧</span>
+                <span class="sidebar__item-icon">⚙️</span>
                 <span class="sidebar__item-label">Tuning</span>
             </button>
             <button class="sidebar__item" data-tab="evaluation" role="tab">
@@ -86,8 +80,10 @@
         </button>
     </aside>
 
-<!-- Main Content -->
-    <main class="main-content" id="main-content">
+<!-- App Layout: Main Content -->
+<div class="app-layout">
+    <!-- Main Content -->
+    <main class="main-content">
 
         <!-- Theme Toggle (bottom-right corner) -->
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
@@ -112,9 +108,8 @@
             <!-- Header (inside app-shell for EDA) -->
             <header class="header">
         <div class="header__brand">
-            <div class="header__brand">
             <div class="header__icon">🛡️</div>
-            <h1>Credit Card Fraud Detection <span class="version-badge">v2</span></h1>
+            <h1>Credit Card Fraud Detection</h1>
         </div>
         <p class="header__sub">Neural Network Dashboard — Model Analytics & Real-Time Prediction</p>
 </header>
@@ -244,7 +239,7 @@
         <!-- Neural Network Diagram -->
         <div class="card">
             <div class="card__header">
-                <span class="card__header-icon">🧮</span>
+                <span class="card__header-icon">🧠</span>
                 <div>
                     <div class="card__title">Neural Network Architecture</div>
                     <div class="card__subtitle">MLP: 15 → 256 → 128 → 64 → 1 (Sigmoid)</div>
@@ -811,10 +806,8 @@
             const result = await res.json();
             if (!res.ok) throw new Error(result.error || 'Server error');
             showResult(result);
-            showToast(result.prediction === 'FRAUD' ? 'Fraud detected!' : 'Transaction verified', result.prediction === 'FRAUD' ? 'error' : 'success');
         } catch (err) {
             showError(err.message || 'Something went wrong.');
-            showToast(err.message || 'Something went wrong.', 'error');
         } finally { setLoading(false); }
     });
 
@@ -825,7 +818,7 @@
 
     function showResult(r) {
         const predEl = document.getElementById('result-prediction');
-        predEl.textContent = r.prediction === 'FRAUD' ? 'FRAUD DETECTED' : 'LEGITIMATE';
+        predEl.textContent = r.prediction === 'FRAUD' ? '⚠️ FRAUD DETECTED' : '✅ LEGITIMATE';
         predEl.className = 'result-prediction ' + (r.prediction === 'FRAUD' ? 'fraud' : 'legit');
 
         document.getElementById('result-probability').innerHTML = r.probability.toFixed(1) + '<span class="pct">%</span>';
@@ -836,13 +829,9 @@
         requestAnimationFrame(() => requestAnimationFrame(() => bar.style.width = r.probability + '%'));
 
         const badge = document.getElementById('risk-badge');
-        const riskIcons = {
-            high: '<span style="color:#ef4444">●</span>',
-            medium: '<span style="color:#f97316">●</span>',
-            low: '<span style="color:#22c55e">●</span>'
-        };
+        const icons = {high:'🔴', medium:'🟠', low:'🟢'};
         badge.className = 'risk-badge ' + r.risk.toLowerCase();
-        badge.innerHTML = riskIcons[r.risk.toLowerCase()] + ' ' + r.risk + ' RISK';
+        badge.textContent = icons[r.risk.toLowerCase()] + ' ' + r.risk + ' RISK';
 
         document.getElementById('threshold-note').textContent = 'Decision threshold: ' + r.threshold + '%';
         document.getElementById('distance-note').textContent = 'Distance to merchant: ' + (r.distance_km || 0) + ' km';
@@ -1740,21 +1729,6 @@
         html += '</div>';
 
         container.innerHTML = html;
-    }
-
-    // ─── Toast Notifications ─────────────────────────
-    function showToast(msg, type = 'info') {
-        let c = document.querySelector('.toast-container');
-        if (!c) {
-            c = document.createElement('div');
-            c.className = 'toast-container';
-            document.body.appendChild(c);
-        }
-        const t = document.createElement('div');
-        t.className = 'toast toast--' + type;
-        t.textContent = msg;
-        c.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
     }
 
 })();
